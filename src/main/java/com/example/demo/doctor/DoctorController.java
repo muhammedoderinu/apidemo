@@ -23,6 +23,33 @@ public class DoctorController {
         return doctorService.getDoctors();
     }
 
+
+    @GetMapping(path="/list/{doctorId}")
+        public DoctorInfo getDoctor(@PathVariable("doctorId") Long doctorId){
+        return doctorService.getDoctor(doctorId);
+        }
+
+
+    @PutMapping(path = "{doctorId}")
+    public void updateDoctor(
+            @PathVariable("doctorId") Long doctorId,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) String lga,
+            @RequestParam(required = false) String state,
+            @RequestParam(required = false) String homeAddress){
+            doctorService.updateDoctor(doctorId, firstName,
+                    lastName, email, phoneNumber,
+                    lga, state, homeAddress); {
+
+    }
+
+
+    }
+
+
     @PostMapping(path="/save")
     public void registerNewDoctor(@RequestBody DoctorInfo doctorInfo){
 

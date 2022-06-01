@@ -2,9 +2,11 @@ package com.example.demo.doctor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -65,5 +67,74 @@ public class DoctorService {
             throw new IllegalStateException("doctor with id"+doctorId+"does not exists");
         }
         doctorRepository.deleteById(doctorId);
+    }
+
+    public DoctorInfo getDoctor(Long doctorId) {
+        Address address = new Address();
+        DoctorInfo doctorInfo = new DoctorInfo();
+
+        Optional<Doctor> doctor =  doctorRepository.findById(doctorId);
+        address = doctor.get().getAddress();
+        doctorInfo.setEmail(doctor.get().getEmail());
+        doctorInfo.setFirstName(doctor.get().getFirstName());
+        doctorInfo.setLastName(doctor.get().getLastName());
+        doctorInfo.setPhoneNumber(doctor.get().getPhoneNumber());
+        doctorInfo.setHomeAddress(address.getHomeAddress());
+        doctorInfo.setLga(address.getLga());
+        doctorInfo.setState(address.getState());
+
+        return doctorInfo;
+
+
+    }
+
+    @Transactional
+    public void updateDoctor(Long doctorId, String firstName,
+                             String lastName, String email, String phoneNumber,
+                             String lga, String state, String homeAddress) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(
+                ()-> new IllegalStateException(
+                        "doctor with id" +doctorId+ "does not exist"));
+
+        Address address = doctor.getAddress();
+
+        if(firstName!=null && firstName.length()>0 && !Objects.equals(doctor.getFirstName(),
+              firstName)){
+            doctor.setFirstName(firstName);
+        }
+
+        if(lastName!=null && lastName.length()>0 && !Objects.equals(doctor.getLastName(),
+                lastName)){
+            doctor.setLastName(lastName);
+        }
+        if(phoneNumber!=null && phoneNumber.length()>0 && !Objects.equals(doctor.getPhoneNumber(),
+                phoneNumber)){
+            doctor.setPhoneNumber(phoneNumber);
+        }
+
+        if(email!=null && email.length()>0 && !Objects.equals(doctor.getEmail(),
+                email)){
+            doctor.setEmail(email);
+        }
+
+        if(lga!=null && lga.length()>0 && !Objects.equals(address.getLga(),
+                lga)){
+            address.setLga(lga);
+        }
+
+        if(state!=null && state.length()>0 && !Objects.equals(address.getState(),
+                state)){
+            address.setState(state);
+        }
+
+        if(homeAddress!=null && homeAddress.length()>0 && !Objects.equals(address.getHomeAddress(),
+                homeAddress)){
+            address.setHomeAddress(homeAddress);
+        }
+
+
+
+
+
     }
 }
